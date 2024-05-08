@@ -382,7 +382,7 @@ where
         let new_zoom = zoom_x.min(zoom_y);
 
         // calculate the zoom delta and call handle_zoom to adjust the zoom factor
-        let zoom_delta = new_zoom / meta.zoom - 1.0;
+        let zoom_delta = new_zoom / meta.zoom;
         self.zoom(rect, zoom_delta, None, meta);
 
         // calculate the center of the graph and the canvas
@@ -414,8 +414,8 @@ where
                 return;
             }
 
-            let step = self.settings_navigation.zoom_speed * (delta - 1.).signum();
-            self.zoom(&resp.rect, step, i.pointer.hover_pos(), meta);
+            let mul = (self.settings_navigation.zoom_speed * (delta - 1.)) + 1.0;
+            self.zoom(&resp.rect, mul, i.pointer.hover_pos(), meta);
         });
     }
 
@@ -437,12 +437,12 @@ where
         }
     }
 
-    /// Zooms the graph by the given delta. It also compensates with pan to keep the zoom center in the same place.
-    fn zoom(&self, rect: &Rect, delta: f32, zoom_center: Option<Pos2>, meta: &mut Metadata) {
+    /// Zooms the graph by the given multiplier. It also compensates with pan to keep the zoom 
+    /// center in the same place.
+    fn zoom(&self, rect: &Rect, mul: f32, zoom_center: Option<Pos2>, meta: &mut Metadata) {
         let center_pos = zoom_center.unwrap_or(rect.center()).to_vec2();
         let graph_center_pos = (center_pos - meta.pan) / meta.zoom;
-        let factor = 1. + delta;
-        let new_zoom = meta.zoom * factor;
+        let new_zoom = (meta.zoom * mul).max(1.0);
 
         let pan_delta = graph_center_pos * meta.zoom - graph_center_pos * new_zoom;
         let new_pan = meta.pan + pan_delta;
