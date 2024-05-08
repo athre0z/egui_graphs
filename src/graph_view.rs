@@ -400,7 +400,7 @@ where
         meta.top_left = resp.rect.left_top();
 
         self.handle_zoom(ui, resp, meta);
-        self.handle_pan(resp, meta);
+        self.handle_pan(ui, resp, meta);
     }
 
     fn handle_zoom(&self, ui: &Ui, resp: &Response, meta: &mut Metadata) {
@@ -419,16 +419,20 @@ where
         });
     }
 
-    fn handle_pan(&self, resp: &Response, meta: &mut Metadata) {
+    fn handle_pan(&self, ui: &Ui, resp: &Response, meta: &mut Metadata) {
         if !self.settings_navigation.zoom_and_pan_enabled {
             return;
         }
 
-        if resp.dragged_by(PointerButton::Middle)
-            && self.g.dragged_node().is_none()
-            && (resp.drag_delta().x.abs() > 0. || resp.drag_delta().y.abs() > 0.)
-        {
-            let new_pan = meta.pan + resp.drag_delta();
+        if self.g.dragged_node().is_some() {
+            return;
+        }
+
+        let mut new_pan = meta.pan;
+        new_pan += resp.drag_delta();
+        new_pan += ui.input(|x| x.smooth_scroll_delta);
+
+        if new_pan != meta.pan {
             self.set_pan(new_pan, meta);
         }
     }

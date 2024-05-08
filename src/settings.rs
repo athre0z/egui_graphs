@@ -94,7 +94,7 @@ impl Default for SettingsNavigation {
     fn default() -> Self {
         Self {
             screen_padding: 0.3,
-            zoom_speed: 0.1,
+            zoom_speed: 1.0,
             fit_to_screen_enabled: true,
             zoom_and_pan_enabled: false,
         }
