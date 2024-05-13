@@ -7,7 +7,7 @@ use egui::{
 use petgraph::{stable_graph::IndexType, EdgeType};
 
 use crate::{draw::DrawContext, elements::EdgeProps, DisplayEdge, DisplayNode, Node};
-
+use super::clamp_font_size;
 use super::edge_shape_builder::{EdgeShapeBuilder, TipProps};
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
@@ -97,10 +97,11 @@ impl<N: Clone, E: Clone, Ty: EdgeType, Ix: IndexType, D: DisplayNode<N, E, Ty, I
 
             // TODO: export to func
             if label_visible {
+                let font_size = clamp_font_size(ctx.meta.canvas_to_screen_size(size));
                 let galley = ctx.ctx.fonts(|f| {
                     f.layout_no_wrap(
                         self.label_text.clone(),
-                        FontId::new(ctx.meta.canvas_to_screen_size(size), FontFamily::Monospace),
+                        FontId::new(font_size, FontFamily::Monospace),
                         color,
                     )
                 });
@@ -142,10 +143,11 @@ impl<N: Clone, E: Clone, Ty: EdgeType, Ix: IndexType, D: DisplayNode<N, E, Ty, I
             // TODO: export to func
             if label_visible {
                 let size = (node_size(start) + node_size(end)) / 2.;
+                let font_size = clamp_font_size(ctx.meta.canvas_to_screen_size(size));
                 let galley = ctx.ctx.fonts(|f| {
                     f.layout_no_wrap(
                         self.label_text.clone(),
-                        FontId::new(ctx.meta.canvas_to_screen_size(size), FontFamily::Monospace),
+                        FontId::new(font_size, FontFamily::Monospace),
                         color,
                     )
                 });
@@ -190,10 +192,11 @@ impl<N: Clone, E: Clone, Ty: EdgeType, Ix: IndexType, D: DisplayNode<N, E, Ty, I
         // TODO: export to func
         if label_visible {
             let size = (node_size(start) + node_size(end)) / 2.;
+            let font_size = clamp_font_size(ctx.meta.canvas_to_screen_size(size));
             let galley = ctx.ctx.fonts(|f| {
                 f.layout_no_wrap(
                     self.label_text.clone(),
-                    FontId::new(ctx.meta.canvas_to_screen_size(size), FontFamily::Monospace),
+                    FontId::new(font_size, FontFamily::Monospace),
                     color,
                 )
             });

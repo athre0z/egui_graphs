@@ -4,6 +4,7 @@ use egui::{
 };
 use petgraph::{stable_graph::IndexType, EdgeType};
 
+use super::clamp_font_size;
 use crate::{draw::drawer::DrawContext, DisplayNode, NodeProps};
 
 /// This is the default node shape which is used to display nodes in the graph.
@@ -76,7 +77,7 @@ impl<N: Clone, E: Clone, Ty: EdgeType, Ix: IndexType> DisplayNode<N, E, Ty, Ix>
         let galley = ctx.ctx.fonts(|f| {
             f.layout_no_wrap(
                 self.label_text.clone(),
-                FontId::new(circle_radius, FontFamily::Monospace),
+                FontId::new(clamp_font_size(circle_radius), FontFamily::Monospace),
                 color,
             )
         });
