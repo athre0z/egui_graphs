@@ -420,11 +420,10 @@ where
     }
 
     fn handle_pan(&self, ui: &Ui, resp: &Response, meta: &mut Metadata) {
-        if !self.settings_navigation.zoom_and_pan_enabled {
-            return;
-        }
-
-        if self.g.dragged_node().is_some() {
+        if !self.settings_navigation.zoom_and_pan_enabled
+            || resp.hover_pos().is_none()
+            || self.g.dragged_node().is_some()
+        {
             return;
         }
 
@@ -437,7 +436,7 @@ where
         }
     }
 
-    /// Zooms the graph by the given multiplier. It also compensates with pan to keep the zoom 
+    /// Zooms the graph by the given multiplier. It also compensates with pan to keep the zoom
     /// center in the same place.
     fn zoom(&self, rect: &Rect, mul: f32, zoom_center: Option<Pos2>, meta: &mut Metadata) {
         let center_pos = zoom_center.unwrap_or(rect.center()).to_vec2();
