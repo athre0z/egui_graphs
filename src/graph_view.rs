@@ -441,7 +441,7 @@ where
     fn zoom(&self, rect: &Rect, mul: f32, zoom_center: Option<Pos2>, meta: &mut Metadata) {
         let center_pos = zoom_center.unwrap_or(rect.center()).to_vec2();
         let graph_center_pos = (center_pos - meta.pan) / meta.zoom;
-        let new_zoom = (meta.zoom * mul).max(1.0);
+        let new_zoom = (meta.zoom * mul).max(0.1);
 
         let pan_delta = graph_center_pos * meta.zoom - graph_center_pos * new_zoom;
         let new_pan = meta.pan + pan_delta;
